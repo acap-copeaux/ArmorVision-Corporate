@@ -1,0 +1,25 @@
+{
+  "name": "ArmorVision Nutrition",
+  "short_name": "AV Nutrition",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e1117",
+  "theme_color": "#111318",
+  "description": "Assistant nutritionnel ArmorVision — suivi, programmes, courses, notifications, astuces.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
