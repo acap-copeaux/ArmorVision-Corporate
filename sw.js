@@ -1,7 +1,7 @@
-// Armor Vision Nutrition — Service Worker
-const CACHE = 'av-nutri-v1.7';
+// Armor Vision Nutrition — Service Worker (compatible v1.9)
+const CACHE = 'av-nutri-v1.9';
 self.addEventListener('install', (e)=>{
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./','./index.html']).catch(()=>{})));
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./','./index.html','./av_v19.js','./manifest.json']).catch(()=>{})));
   self.skipWaiting();
 });
 self.addEventListener('activate', (e)=>{ e.waitUntil(self.clients.claim()); });
