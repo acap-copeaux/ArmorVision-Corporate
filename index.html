@@ -3,656 +3,317 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ArmorVision Nutrition v1.5 — +patches</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#111318">
+<title>ArmorVision Nutrition</title>
+
+<!-- Ajout PWA v1.9 -->
+<link rel="manifest" href="./manifest.json">
+
 <style>
-/* ====== (styles originaux v1.5) ====== */
-/* Reset & base */
 :root{
-  --bg:#0e1117; --panel:#16161d; --text:#e7ecf3; --muted:#a7afbc;
-  --primary:#3b82f6; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
-  --border:#1f2333; --shadow:0 4px 24px rgba(0,0,0,.25);
+  --bg:#0d1117; --fg:#e6edf3; --muted:#9ba3af; --panel:#111623; --border:#263043;
+  --accent:#00c2ff; --accent2:#ff9a00; --good:#36d399; --warn:#fbbf24; --bad:#ef4444;
 }
-*{box-sizing:border-box} html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-a{color:var(--primary);text-decoration:none} .muted{color:var(--muted)} .hidden{display:none !important}
-h1,h2,h3{margin:0 0 8px} h1{font-size:24px} h2{font-size:20px} h3{font-size:16px}
-.page{display:none;padding:16px 16px 92px;max-width:980px;margin:0 auto}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;box-shadow:var(--shadow);margin:10px 0}
-.row{display:flex;gap:12px;align-items:center}
-.col{display:flex;flex-direction:column;gap:10px}
-.btn{background:#222736;color:#dfe6f3;border:1px solid #2b3145;border-radius:10px;padding:8px 12px;cursor:pointer}
-.btn.small{padding:6px 10px;font-size:12px} .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
-.input, input, select, textarea{background:#0f1420;color:#dfe6f3;border:1px solid #273047;border-radius:10px;padding:8px 10px}
-.kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.kpi .tile{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center}
-.seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.seg .chip{padding:6px 10px;cursor:pointer} .seg .chip.active{background:#223;}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";}
+a{color:var(--accent);text-decoration:none}
+.muted{color:var(--muted)}
+.page{display:none;padding:16px 16px 72px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;margin:10px 0;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.row{display:flex;align-items:center}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--border);padding:6px 10px;border-radius:999px;cursor:pointer}
+.chip.active{background:var(--accent);border-color:transparent;color:#0b1220}
+.btn{border:1px solid var(--border);background:#0f1522;border-radius:10px;padding:8px 12px;cursor:pointer}
+.btn.small{padding:6px 10px}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#0b1220;border:none}
+.input{background:#0f1522;border:1px solid var(--border);border-radius:10px;color:var(--fg);padding:8px 10px}
+.table-compact{width:100%;border-collapse:collapse}
+.table-compact th,.table-compact td{border-bottom:1px solid var(--border);padding:6px 8px;font-size:14px}
+.hidden{display:none}
 
-/* nav bottom */
-.nav{position:fixed;left:0;right:0;bottom:0;background:#0b0e14;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:space-around;align-items:center;height:70px;z-index:50}
-.nav .it{display:flex;flex-direction:column;align-items:center;gap:4px;color:#a9b2c7;cursor:pointer}
-.nav .it.active{color:#fff}
+/* Navbar (v1.5 style) */
+nav.nav{position:fixed;left:0;right:0;bottom:0;background:#0f1420;border-top:1px solid var(--border);display:flex;gap:6px;justify-content:space-around;padding:10px}
+nav.nav .item{display:flex;flex-direction:column;align-items:center;color:var(--muted);cursor:pointer}
+nav.nav .item.active{color:var(--accent)}
 
-/* thèmes (Jarvis / X-Vision / Shield) */
-.theme-jarvis :root{} .theme-xvision :root{} .theme-shield :root{}
-body.light{--bg:#f6f8fb; --panel:#ffffff; --text:#0f1320; --muted:#5c667b; --border:#dfe5f0; --shadow:0 4px 20px rgba(0,0,0,.08)}
-body.light .btn{background:#eef2f9;color:#0f1320;border-color:#d6deee}
-body.light .input{background:#fff;color:#0f1320;border-color:#cdd6ea}
+/* Modale générique */
+.modal{position:fixed;inset:0;display:none}
+.modal .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.modal .sheet{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(720px,92vw);background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px}
+.modal.show{display:block}
+.close-x{position:absolute;right:12px;top:8px;cursor:pointer;opacity:.75}
 
-/* tables, chips, etc. (v1.5) */
-.table{width:100%;border-collapse:collapse} .table th,.table td{padding:8px;border-bottom:1px dashed var(--border)}
-.chip{display:inline-flex;align-items:center;gap:6px;background:#1a1f2b;border:1px solid #2a3145;border-radius:999px;padding:4px 8px;font-size:12px}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:84px;background:#1a2030;border:1px solid #2b3149;border-radius:12px;padding:10px 14px;color:#cfe3ff;z-index:60}
+/* KPI / Score */
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi .box{background:#0f1522;border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center}
+.kpi .big{font-size:28px;font-weight:700}
+.kpi .label{font-size:12px;color:var(--muted)}
 
-/* +++ CSS utilitaire (AJOUT) +++ */
-.tip-wrap { display:flex; align-items:center; justify-content:center; margin:14px 0; }
-.tip-card { max-width:720px; width:100%; border-radius:14px; padding:14px; border:1px solid var(--border, #1f2333); box-shadow:0 4px 24px rgba(0,0,0,.25); text-align:center; background: var(--panel, #16161d); }
-body.light .tip-card { color:#10131a; }
-body:not(.light) .tip-card { color:#e9eef4; }
-.chips { display:flex; flex-wrap:wrap; gap:6px; }
-.chips .chip .x { margin-left:6px; opacity:.7; cursor:pointer; }
-.chips .chip .x:hover { opacity:1; }
-.table-compact { width:100%; border-collapse:collapse; }
-.table-compact th, .table-compact td { border-bottom:1px dashed var(--border, #1f2333); padding:6px 8px; text-align:left; }
-.table-compact th:last-child, .table-compact td:last-child { text-align:right; }
+/* Slider/touch */
+main{height:100%;min-height:100vh;overflow:hidden}
 </style>
 </head>
-<body class="theme-jarvis">
+<body>
+<main>
 
-<!-- ============ NAVIGATION ============ -->
-<nav class="nav" id="nav">
-  <div class="it active" data-go="dash">🏠<div>Accueil</div></div>
-  <div class="it" data-go="plan">📅<div>Programme</div></div>
-  <div class="it" data-go="shop">🛒<div>Courses</div></div>
-  <div class="it" data-go="settings">⚙️<div>Paramètres</div></div>
-</nav>
-
-<!-- ============ PAGES ============ -->
-<div id="dash" class="page" style="display:block">
-  <div class="row" style="justify-content:space-between">
-    <h1>ArmorVision — Nutrition</h1>
-    <div class="row">
-      <button class="btn small" onclick="exportState()">Sauvegarder</button>
-      <label class="btn small"><input type="file" id="importFile" accept=".json" hidden onchange="importState(this)">Importer</label>
-    </div>
-  </div>
-
-  <!-- KPI v1.5 -->
+<!-- Accueil / Dashboard -->
+<section id="dash" class="page" style="display:block">
+  <h2>Accueil</h2>
   <div class="kpi">
-    <div class="tile"><div class="muted">Poids</div><div id="kpiWeight">—</div></div>
-    <div class="tile"><div class="muted">IMC</div><div id="kpiBMI">—</div></div>
-    <div class="tile"><div class="muted">Streak</div><div id="kpiStreak">—</div></div>
-  </div>
-
-  <!-- Astuce du jour centrée (AJOUT) -->
-  <div class="tip-wrap">
-    <div class="tip-card" id="tipCard">
-      <h3 style="margin:0 0 6px">💡 Astuce du jour</h3>
-      <div id="tipText" class="muted"></div>
+    <div class="box">
+      <div id="kpiAdh" class="big">—</div>
+      <div class="label">Score d’adhérence</div>
+    </div>
+    <div class="box">
+      <div id="kpiIMC" class="big">—</div>
+      <div class="label">IMC</div>
+    </div>
+    <div class="box">
+      <div id="kpiStreak" class="big">0</div>
+      <div class="label">Streak (jours)</div>
     </div>
   </div>
 
-  <!-- cartes v1.5 : prochain repas, courbes, etc. -->
-  <div class="card">
-    <h3>Prochain repas</h3>
-    <div id="nextMeal">—</div>
+  <!-- v1.9 injectera ici l’Astuce du jour (centrée) -->
+</section>
+
+<!-- Programmes / Repas (MTC yin/yang, etc.) -->
+<section id="plan" class="page">
+  <h2>Programme & repas</h2>
+  <div id="planDays" class="card">
+    <h3>Journée type</h3>
+    <div id="mealsList"></div>
   </div>
 
   <div class="card">
-    <h3>Suivi poids & IMC</h3>
-    <canvas id="chartWeight" height="120"></canvas>
+    <h3>Suivi d’adhérence</h3>
+    <div id="adhList"></div>
+    <p class="muted">Coche ce que tu as respecté aujourd’hui pour faire monter le score.</p>
+  </div>
+</section>
+<!-- Courses / Magasins -->
+<section id="shop" class="page">
+  <h2>Courses</h2>
+
+  <div id="listBox" class="card">
+    <h3>Liste du jour</h3>
+    <div id="listContent" class="muted">Aucun aliment pour l’instant.</div>
   </div>
 
-  <div class="card">
-    <h3>Indicateurs nutritionnels</h3>
-    <div id="nutriIndicators">—</div>
-  </div>
-</div>
+  <!-- v1.9 injectera automatiquement :
+       - Contrôles Ville/📍 + étendue (Jour/Semaine/4 semaines)
+       - Bloc “Magasins à proximité”
+       - Bloc “Comparateur”
+       - Editeur de prix (modal) -->
+</section>
 
-<div id="plan" class="page">
-  <h1>Programme</h1>
+<!-- Paramètres -->
+<section id="settings" class="page">
+  <h2>Paramètres</h2>
+
   <div class="card">
-    <div class="row" style="flex-wrap:wrap">
-      <div class="row">
-        <label>Objectif</label>
-        <select id="goal" class="input">
-          <option value="fatloss">Perte de masse grasse</option>
-          <option value="maintain">Maintien</option>
-          <option value="muscle">Prise de muscle</option>
+    <h3>Profil</h3>
+    <div class="row" style="gap:8px;flex-wrap:wrap">
+      <label>Sexe
+        <select id="sex" class="input">
+          <option>Homme</option>
+          <option>Femme</option>
         </select>
-      </div>
-      <div class="row">
-        <label>Calories</label>
-        <input id="calories" type="number" class="input" style="max-width:120px" value="2000">
-      </div>
-      <div class="row">
-        <button class="btn primary" onclick="generatePlan()">Générer</button>
-      </div>
+      </label>
+      <label>Âge <input id="age" type="number" min="10" max="110" class="input" style="max-width:110px"></label>
+      <label>Taille (cm) <input id="height" type="number" min="120" max="230" class="input" style="max-width:110px"></label>
+      <label>Poids (kg) <input id="weight" type="number" min="35" max="250" class="input" style="max-width:110px"></label>
+      <button class="btn small" id="btnIMC">Calculer IMC</button>
     </div>
   </div>
 
   <div class="card">
-    <h3>Repas du jour</h3>
-    <div id="planMeals">—</div>
-  </div>
-
-  <div class="card">
-    <h3>Préférences / Allergies / Intolérances / MTC</h3>
-    <div id="prefsBox">—</div>
-  </div>
-</div>
-
-<div id="shop" class="page">
-  <h1>Courses</h1>
-  <div class="card">
-    <div class="row" style="flex-wrap:wrap;gap:8px">
-      <input id="cityInput" class="input" placeholder="Ville / Code postal" style="max-width:200px">
-      <button class="btn small" onclick="refreshStores()">↻</button>
-      <button class="btn small" onclick="useGPS()">📍</button>
-      <div class="seg">
-        <span class="chip" onclick="setShopScope('day')">Jour</span>
-        <span class="chip" onclick="setShopScope('week')">Semaine</span>
-        <span class="chip" onclick="setShopScope('4w')">4 semaines</span>
-      </div>
+    <h3>Préférences & MTC</h3>
+    <div class="row" style="gap:8px;flex-wrap:wrap">
+      <label><input type="checkbox" id="pref-vege"> Végétarien</label>
+      <label><input type="checkbox" id="pref-vegan"> Végan</label>
+      <label><input type="checkbox" id="pref-halal"> Halal</label>
+      <label><input type="checkbox" id="pref-kosher"> Casher</label>
+      <label><input type="checkbox" id="intol-gluten"> Sans gluten</label>
+      <label><input type="checkbox" id="intol-lactose"> Sans lactose</label>
     </div>
-  </div>
-  <div class="card">
-    <h3>Liste interactive</h3>
-    <div id="todoList">—</div>
-  </div>
-  <div class="card">
-    <h3>Magasins à proximité</h3>
-    <div class="row" style="gap:8px;margin:6px 0">
-      <button class="btn small" type="button" onclick="openPriceEditor()">💶 Configurer prix</button>
-    </div>
-    <div id="storeBox" class="muted">Clique “📍” ou saisis ta ville puis ↻.</div>
-  </div>
-  <div class="card">
-    <h3>Comparateur</h3>
-    <div id="compareBox" class="muted">—</div>
-  </div>
-
-  <!-- MODAL prix -->
-  <div class="modal" id="priceModal">
-    <div class="backdrop" onclick="closeModal('priceModal')"></div>
-    <div class="sheet">
-      <div class="close-x" onclick="closeModal('priceModal')">✖</div>
-      <h3>💶 Configurer les prix par magasin</h3>
-      <p class="muted" style="margin:6px 0">Saisis les prix <b>€/kg</b> (ou €/L). Les totaux utiliseront ces valeurs en priorité.</p>
-      <div id="priceEditorBox" style="max-height:60vh;overflow:auto"></div>
-      <div class="row" style="gap:8px;margin-top:10px">
-        <button class="btn small primary" onclick="savePriceEditor()">Enregistrer</button>
-        <button class="btn small" onclick="closeModal('priceModal')">Fermer</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="settings" class="page">
-  <h1>Paramètres</h1>
-  <div class="card">
-    <div class="row" style="flex-wrap:wrap">
-      <div class="row">
-        <label>Taille (cm)</label>
-        <input id="height" type="number" class="input" style="max-width:100px">
-      </div>
-      <div class="row">
-        <label>Poids (kg)</label>
-        <input id="weight" type="number" class="input" style="max-width:100px">
-      </div>
-      <div class="row">
-        <label>Thème</label>
-        <select id="theme" class="input">
-          <option value="jarvis">Jarvis</option>
-          <option value="xvision">X-Vision</option>
-          <option value="shield">Shield</option>
-        </select>
-      </div>
+    <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:8px">
+      <span class="muted">Équilibres MTC / Yin-Yang appliqués aux repas.</span>
     </div>
   </div>
 
-  <!-- Notifications (AJOUT) -->
-  <div class="card" style="margin-top:12px">
-    <h3>Notifications</h3>
-    <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-      <label class="row" style="gap:6px"><input id="notifEnable" type="checkbox"> Activer</label>
-      <div class="seg" id="notifModeSeg">
-        <span class="chip active" data-nmode="relative">Avant repas</span>
-        <span class="chip" data-nmode="fixed">Heures fixes</span>
-      </div>
-    </div>
-    <div id="notifRelative" class="row" style="gap:8px;margin-top:8px">
-      <label>Minutes avant</label>
-      <input id="notifMinutes" type="number" min="0" max="180" value="45" style="max-width:120px">
-      <span class="muted">Appliqué à chaque repas planifié.</span>
-    </div>
-    <div id="notifFixed" class="hidden" style="margin-top:8px">
-      <div class="row" style="gap:8px">
-        <input id="notifTimeInput" type="time" style="max-width:140px">
-        <button class="btn small" type="button" onclick="addFixedTime()">Ajouter</button>
-        <span class="muted">Ex : 08:00, 12:30, 19:00</span>
-      </div>
-      <div id="notifTimeList" class="chips" style="margin-top:8px"></div>
-    </div>
-    <p class="muted" style="margin-top:8px">Les prix “<b>estimé</b>” peuvent ne pas être à jour selon les magasins.</p>
-  </div>
-</div>
-<!-- ====== MODALES v1.5 (ex: openModal/closeModal) ====== -->
-<style>
-.modal{position:fixed;inset:0;display:none;z-index:100}
-.modal .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.5)}
-.modal .sheet{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);min-width:320px;max-width:95vw;max-height:85vh;overflow:auto;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
-.close-x{position:absolute;right:10px;top:10px;opacity:.8;cursor:pointer}
-</style>
+  <!-- v1.9 injectera ici la carte "Notifications" -->
+</section>
 
+</main>
+
+<!-- Navbar -->
+<nav class="nav" id="nav">
+  <div class="item active" data-target="dash">🏠<small>Accueil</small></div>
+  <div class="item" data-target="plan">📋<small>Programme</small></div>
+  <div class="item" data-target="shop">🛒<small>Courses</small></div>
+  <div class="item" data-target="settings">⚙️<small>Paramètres</small></div>
+</nav>
 <script>
-function openModal(id){ const m=document.getElementById(id); if(m) m.style.display='block'; }
-function closeModal(id){ const m=document.getElementById(id); if(m) m.style.display='none'; }
+// ====== STATE & PERSISTENCE (v1.5) ======
+const state = JSON.parse(localStorage.getItem('av_state')||'{}');
+function save(){ localStorage.setItem('av_state', JSON.stringify(state)); }
 
-/* ====== PERSISTANCE v1.5 ====== */
-let state = JSON.parse(localStorage.getItem('av_nutri_state')||'{}');
-function save(){ localStorage.setItem('av_nutri_state', JSON.stringify(state)); toast('Sauvegardé'); }
-function toast(s){ const t=document.createElement('div'); t.className='toast'; t.textContent=s; document.body.appendChild(t); setTimeout(()=>t.remove(),1500); }
+// ====== NAV SLIDE / SWIPE ======
+(function(){
+  const viewsOrder = ['dash','plan','shop','settings'];
+  let currentView = 'dash', startX=null, startY=null;
 
-/* ====== NAV ====== */
-const pages=['dash','plan','shop','settings'];
-function showPage(id){
-  pages.forEach(p=> document.getElementById(p).style.display = (p===id?'block':'none') );
-  document.querySelectorAll('.nav .it').forEach(it=> it.classList.toggle('active', it.dataset.go===id));
-}
-document.querySelectorAll('.nav .it').forEach(it=> it.onclick=()=>showPage(it.dataset.go));
+  function _setView(id){
+    document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+    const el = document.getElementById(id); if(el) el.style.display='block';
+    document.querySelectorAll('nav .item').forEach(i=> i.classList.toggle('active', i.dataset.target===id));
+  }
+  window.setView = function(id){ _setView(id); currentView = id; };
 
-/* ====== INIT ETAT v1.5 (étendu ensuite) ====== */
-state.user = state.user || {height:170, weight:70, theme:'jarvis'};
-state.plan = state.plan || {meals:[]};
-state.planWeeks = state.planWeeks || [];
-state.streak = state.streak || {days:0,last:'',badges:[]};
-state.shop = state.shop || {scope:'day', checked:{}, stores:[], prices:{}};
+  const modalOpen = ()=> !!document.querySelector('.modal.show');
+  const goNext = ()=> { const i = viewsOrder.indexOf(currentView); if(i>=0 && i<viewsOrder.length-1) setView(viewsOrder[i+1]); };
+  const goPrev = ()=> { const i = viewsOrder.indexOf(currentView); if(i>0) setView(viewsOrder[i-1]); };
+
+  const SURFACE = document.querySelector('main');
+  const EDGE_GUARD = 30, DIST_MIN = 50, RATIO_HV = 1.2;
+
+  SURFACE.addEventListener('touchstart', (e)=>{
+    if(modalOpen()) return;
+    const t = e.touches[0];
+    if(t.clientX < EDGE_GUARD || t.clientX > window.innerWidth-EDGE_GUARD) return;
+    startX = t.clientX; startY = t.clientY;
+  }, {passive:true});
+
+  SURFACE.addEventListener('touchend', (e)=>{
+    if(startX===null) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX, dy = t.clientY - startY;
+    startX=null; startY=null;
+    if(Math.abs(dx) < DIST_MIN || Math.abs(dx)/Math.max(1,Math.abs(dy))<RATIO_HV) return;
+    if(dx<0) goNext(); else goPrev();
+  }, {passive:true});
+
+  document.querySelectorAll('nav .item').forEach(el=>{
+    el.addEventListener('click', ()=> setView(el.dataset.target));
+  });
+
+  _setView(currentView);
+})();
 </script>
 
-<!-- ====== SCRIPTS UI v1.5 (extraits) ====== -->
 <script>
-function applyTheme(){
-  const t = (state.user?.theme)||'jarvis';
-  document.body.classList.remove('theme-jarvis','theme-xvision','theme-shield');
-  document.body.classList.add('theme-'+t);
+// ====== KPI / IMC / ADHERENCE (v1.5) ======
+function updateIMC(){
+  const h = parseFloat(document.getElementById('height').value||state.height||0)/100;
+  const w = parseFloat(document.getElementById('weight').value||state.weight||0);
+  if(!h||!w){ document.getElementById('kpiIMC').textContent='—'; return; }
+  const imc = w/(h*h);
+  document.getElementById('kpiIMC').textContent = imc.toFixed(1);
+  state.imc = imc; save();
 }
-function updateKPI(){
-  document.getElementById('kpiWeight').textContent = (state.user.weight||'-')+' kg';
-  const h = (state.user.height||170)/100, w=(state.user.weight||70);
-  const bmi = (w/(h*h)); document.getElementById('kpiBMI').textContent = isFinite(bmi)? bmi.toFixed(1) : '—';
-  document.getElementById('kpiStreak').textContent = (state.streak?.days||0)+' j';
-}
-function exportState(){
-  const data = JSON.stringify(state,null,2);
-  const blob = new Blob([data],{type:'application/json'});
-  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='armorvision-nutrition-v15.json'; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url), 500);
-}
-function importState(inp){
-  const f=inp.files?.[0]; if(!f) return;
-  const r=new FileReader(); r.onload=()=>{ try{ state=JSON.parse(r.result); save(); location.reload(); }catch(e){ alert('Fichier invalide'); } };
-  r.readAsText(f);
-}
+document.getElementById('btnIMC').addEventListener('click', updateIMC);
 
-/* ====== GENERATION PLAN v1.5 (MTC intégrée) ====== */
-function generatePlan(){
-  const kcal = +document.getElementById('calories').value||2000;
-  // Ex. jeu de données simplifié; la v1.5 contient déjà la logique MTC & préférences
-  state.plan.meals = [
-    {time:'08:00', name:'Petit-déjeuner', items:[
-      {food:'Skyr nature', grams:150},
-      {food:'Flocons d’avoine', grams:60},
-      {food:'Banane', grams:120}
-    ]},
-    {time:'12:30', name:'Déjeuner', items:[
-      {food:'Filet de poulet', grams:180},
-      {food:'Quinoa', grams:90},
-      {food:'Brocoli', grams:200}
-    ]},
-    {time:'19:00', name:'Dîner', items:[
-      {food:'Saumon', grams:150},
-      {food:'Semoule complète', grams:80},
-      {food:'Courgettes', grams:200}
-    ]},
-    {time:'16:30', name:'Collation', items:[
-      {food:'Pomme', grams:160},
-      {food:'Amandes', grams:25}
-    ]}
+function renderMeals(){
+  const meals = state.plan?.meals || [
+    {time:'08:00', name:'Petit-déjeuner', mtc:'yin', items:[{food:'Flocons d’avoine', grams:60},{food:'Skyr nature', grams:150},{food:'Pomme', grams:150}]},
+    {time:'12:30', name:'Déjeuner', mtc:'yang', items:[{food:'Riz complet', grams:130},{food:'Poulet', grams:150},{food:'Brocoli', grams:200}]},
+    {time:'19:00', name:'Dîner', mtc:'yin', items:[{food:'Quinoa', grams:120},{food:'Saumon', grams:160},{food:'Haricots verts', grams:200}]},
   ];
-  save(); renderPlan(); renderTodo(); updateNextMeal(); renderCompare();
-}
-function renderPlan(){
-  const box=document.getElementById('planMeals');
-  const html = (state.plan.meals||[]).map(m=>`
-   <div class="row" style="justify-content:space-between;border-bottom:1px dashed var(--border);padding:6px 0">
-     <div><b>${m.time||'—'}</b> — ${m.name}</div>
-     <div class="muted">${(m.items||[]).map(i=>`${i.food} ${i.grams}g`).join(' • ')}</div>
-   </div>`).join('');
-  box.innerHTML = html || '—';
-}
-function updateNextMeal(){
-  const n = new Date(); const meals = state.plan.meals||[];
-  let next = meals.map(m=>({t:parseInt(m.time.replace(':','')), m})).filter(x=>x.t>(n.getHours()*100+n.getMinutes())).sort((a,b)=>a.t-b.t)[0];
-  const box=document.getElementById('nextMeal');
-  box.textContent = next? `${next.m.time} — ${next.m.name}` : 'Terminé pour aujourd’hui';
-}
-function renderTodo(){
-  const box=document.getElementById('todoList'); const list={};
-  (state.plan.meals||[]).forEach(m=> (m.items||[]).forEach(i=> list[i.food]=(list[i.food]||0)+i.grams ));
-  box.innerHTML = Object.entries(list).map(([food,g])=>`
-    <div class="row" style="justify-content:space-between">
-      <label class="row" style="gap:8px"><input type="checkbox"> ${food}</label>
-      <span class="muted">${g} g</span>
-    </div>`).join('') || '—';
+  state.plan = state.plan || {}; state.plan.meals = meals; save();
+
+  const box = document.getElementById('mealsList');
+  box.innerHTML = meals.map(m=>`
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div><b>${m.time}</b> — ${m.name} <span class="muted">MTC: ${m.mtc}</span></div>
+      </div>
+      <ul>${(m.items||[]).map(i=>`<li>${i.food} — ${i.grams} g</li>`).join('')}</ul>
+    </div>`).join('');
 }
 
-/* streak (v1.5 existant) */
-function streakTick(){
-  const today = new Date().toISOString().slice(0,10);
-  if(state.streak.last!==today){ state.streak.last=today; state.streak.days=(state.streak.days||0)+1; save(); updateKPI(); }
-}
+function renderAdh(){
+  const meals = state.plan?.meals||[];
+  const today = (new Date()).toISOString().slice(0,10);
+  state.adh = state.adh || {};
+  const day = state.adh[today] || {};
+  const box = document.getElementById('adhList');
+  box.innerHTML = meals.map((m,idx)=>`
+    <label class="row" style="gap:8px;margin:6px 0">
+      <input type="checkbox" data-idx="${idx}" ${day[idx]?'checked':''}>
+      ${m.time} — ${m.name}
+    </label>`).join('');
 
-/* Charts (placeholder v1.5) */
-function drawCharts(){
-  const c=document.getElementById('chartWeight').getContext('2d'); c.fillStyle='#334'; c.fillRect(0,0,600,120);
-  // (… ta v1.5 peut déjà utiliser Chart.js; ici minimal pour tenir en standalone)
-}
-</script>
-
-<!-- ====== PATCH: ÉTAT étendu ====== -->
-<script>
-try{
-  state.user = state.user || {};
-  state.shop = state.shop || {scope:'day', checked:{}, stores:[], prices:{}};
-  state.shop.priceEstimated = state.shop.priceEstimated || {};
-  state.notify = state.notify || {enabled:false, timer:null};
-  if(!state.notify.mode){ state.notify = {enabled:!!state.notify.enabled, mode:'relative', minutesBefore:45, times:['08:00','12:30','19:00'], timers:[]}; }
-}catch(e){ console.warn('State patch failed', e); }
-
-function todayISO(){ return new Date().toISOString().slice(0,10); }
-</script>
-<!-- ====== PATCH: Astuce + Notifications ====== -->
-<script>
-/* Astuce du jour */
-const TIPS_AV = [
- "Bois 500 ml d’eau 30 minutes avant le repas.",
- "Protéines au petit-déj = appétit mieux contrôlé.",
- "Ajoute une portion de légumes à chaque repas.",
- "Prépare ta collation avant de sortir.",
- "10 minutes de marche post-repas améliorent la glycémie.",
- "Assaisonne avec épices/citron : goût ↑, calories ≈ 0.",
- "Féculents complets à midi, plus léger le soir.",
- "Vise 20–30 g de protéines par repas.",
- "12 h de jeûne nocturne quand possible.",
- "Surgelés nature = gain de temps sans perte de qualité."
-];
-function tipForToday(){ const d=todayISO(); let h=0; for(const ch of d) h=(h*31+ch.charCodeAt(0))%TIPS_AV.length; return TIPS_AV[h]; }
-function renderTip(){ const el=document.getElementById('tipText'); if(el) el.textContent = tipForToday(); }
-
-/* Notifications */
-function initNotifUI(){
-  const seg=document.getElementById('notifModeSeg'); if(seg){
-    seg.querySelectorAll('.chip').forEach(ch=>{
-      ch.classList.toggle('active', ch.dataset.nmode===state.notify.mode);
-      ch.onclick=()=>{ state.notify.mode=ch.dataset.nmode; if(typeof save==='function') save(); initNotifUI(); };
+  box.querySelectorAll('input[type=checkbox]').forEach(ch=>{
+    ch.addEventListener('change', ()=>{
+      const i = ch.dataset.idx;
+      state.adh[today] = state.adh[today] || {};
+      state.adh[today][i] = ch.checked;
+      save(); updateKPI();
     });
-  }
-  const en=document.getElementById('notifEnable'); if(en){ en.checked=!!state.notify.enabled; en.onchange=()=>{ state.notify.enabled=en.checked; if(typeof save==='function') save(); scheduleAllNotifications(); }; }
-  const min=document.getElementById('notifMinutes'); if(min){ min.value=state.notify.minutesBefore||45; min.oninput=()=>{ state.notify.minutesBefore=+min.value||45; if(typeof save==='function') save(); scheduleAllNotifications(); }; }
-  const rel=document.getElementById('notifRelative'), fix=document.getElementById('notifFixed');
-  if(rel&&fix){ if(state.notify.mode==='relative'){ rel.classList.remove('hidden'); fix.classList.add('hidden'); } else { rel.classList.add('hidden'); fix.classList.remove('hidden'); } }
-  renderFixedTimes();
-}
-function addFixedTime(){ const t=document.getElementById('notifTimeInput').value; if(!t) return; state.notify.times=Array.from(new Set([...(state.notify.times||[]),t])).sort(); if(typeof save==='function') save(); renderFixedTimes(); scheduleAllNotifications(); }
-function removeFixedTime(t){ state.notify.times=(state.notify.times||[]).filter(x=>x!==t); if(typeof save==='function') save(); renderFixedTimes(); scheduleAllNotifications(); }
-function renderFixedTimes(){
-  const box=document.getElementById('notifTimeList'); if(!box) return;
-  const arr=(state.notify.times||[]);
-  box.innerHTML = arr.length ? arr.map(t=>`<span class="chip">${t}<span class="x" onclick="removeFixedTime('${t}')">✖</span></span>`).join(' ') : '<span class="muted">Aucune heure définie.</span>';
-}
-function clearNotifyTimers(){ (state.notify.timers||[]).forEach(id=>clearTimeout(id)); state.notify.timers=[]; }
-function scheduleAllNotifications(){
-  clearNotifyTimers(); if(!state.notify.enabled || !('Notification' in window)) return;
-  if(state.notify.mode==='fixed'){
-    (state.notify.times||[]).forEach(t=>{
-      const [hh,mm]=t.split(':').map(Number); const when=new Date(); when.setHours(hh,mm,0,0);
-      let delay=when-new Date(); if(delay<0) delay+=24*3600*1000;
-      const id=setTimeout(()=>{ try{ new Notification('Rappel', {body:`Notification programmée (${t})`}); }catch(_){ } scheduleAllNotifications(); }, delay);
-      state.notify.timers.push(id);
-    });
-    return;
-  }
-  const meals = (state.plan?.meals||[]);
-  const now=new Date();
-  meals.forEach(m=>{
-    if(!m.time) return;
-    const [hh,mm]=m.time.split(':').map(Number);
-    const when=new Date(); when.setHours(hh,mm,0,0); when.setMinutes(when.getMinutes()-(state.notify.minutesBefore||45));
-    const delay=when-now; if(delay>0){ const id=setTimeout(()=>{ try{ new Notification('Prochain repas',{body:`${m.time} — ${m.name||'Repas'}`}); }catch(_){ } scheduleAllNotifications(); }, delay); state.notify.timers.push(id); }
   });
 }
-</script>
 
-<!-- ====== SHOP: portée + todo ====== -->
-<script>
-function setShopScope(sc){ state.shop.scope=sc; save(); renderCompare(); }
-</script>
+function updateKPI(){
+  const today = (new Date()).toISOString().slice(0,10);
+  const meals = state.plan?.meals||[];
+  const done = Object.values(state.adh?.[today]||{}).filter(Boolean).length;
+  const score = meals.length? Math.round(done/meals.length*100):0;
+  document.getElementById('kpiAdh').textContent = meals.length? score+'%' : '—';
 
-<!-- ====== PRÉFÉRENCES / ALLERGIES (v1.5 placeholder) ====== -->
-<script>
-function renderPrefs(){
-  const box=document.getElementById('prefsBox');
-  box.innerHTML = `
-    <div class="row" style="flex-wrap:wrap">
-      <label>Préférences</label>
-      <input class="input" placeholder="Ex : sans porc, sans lait..." value="${state.user.prefs||''}" oninput="state.user.prefs=this.value; save();">
-      <label>Allergies</label>
-      <input class="input" placeholder="Ex : arachide, gluten..." value="${state.user.allergies||''}" oninput="state.user.allergies=this.value; save();">
-      <label>MTC</label>
-      <input class="input" placeholder="Ex : réchauffer Qi, humidité..." value="${state.user.mtc||''}" oninput="state.user.mtc=this.value; save();">
-    </div>`;
-}
-</script>
-<!-- ====== PATCH: STORES “SAINS” + COMPARATEUR + PRIX ====== -->
-<script>
-/* Géocodage & outils */
-async function geocodeCity(q){ const url=`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`; const r=await fetch(url,{headers:{'Accept':'application/json'}}); const j=await r.json(); if(!j.length) throw new Error('Ville introuvable'); return {lat:+j[0].lat,lon:+j[0].lon}; }
-function haversine(lat1,lon1,lat2,lon2){ const R=6371e3,toRad=v=>v*Math.PI/180; const dlat=toRad(lat2-lat1),dlon=toRad(lon2-lon1); const a=Math.sin(dlat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dlon/2)**2; return 2*R*Math.asin(Math.sqrt(a)); }
-function fmtDist(m){return m<1000?`${Math.round(m)} m`:`${(m/1000).toFixed(1)} km`;}
-
-/* Nouveau filtre “magasins sains” */
-async function loadStores(lat,lon){
-  state.user = state.user || {}; state.user.gps={lat,lon}; if(typeof save==='function') save();
-  const radius=8000;
-  const shopFilter = "^(supermarket|hypermarket|convenience|greengrocer|butcher|seafood|health_food|organic|farm|dairy)$";
-  const query=`[out:json][timeout:25];
-  (
-    node(around:${radius},${lat},${lon})[shop~"${shopFilter}"];
-    way(around:${radius},${lat},${lon})[shop~"${shopFilter}"];
-  );
-  out center tags;`;
-  const url="https://overpass-api.de/api/interpreter?data="+encodeURIComponent(query);
-
-  let data; 
-  try{ const r=await fetch(url); data=await r.json(); }
-  catch(e){ const sb=document.getElementById('storeBox'); if(sb) sb.innerHTML='<span class="muted">Overpass API indisponible. Réessaie plus tard.</span>'; return; }
-
-  const items=(data.elements||[]).map(el=>{
-    const c = el.type==='node' ? {lat:el.lat,lon:el.lon} : (el.center||{});
-    const name = (el.tags && (el.tags.name || el.tags.brand || el.tags['addr:street'])) || 'Magasin';
-    const brand = el.tags && (el.tags.brand || el.tags.operator) || '';
-    const dist = (c.lat&&c.lon)?haversine(lat,lon,c.lat,c.lon):Number.POSITIVE_INFINITY;
-    const link = (c.lat&&c.lon)?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name)}&query=${c.lat},${c.lon}`:null;
-    return {name:(brand?brand+' ':'')+name, dist, link};
-  }).filter(x=>x.dist<radius).sort((a,b)=>a.dist-b.dist).slice(0,40);
-
-  state.shop = state.shop || {}; 
-  state.shop.stores=items.map(it=>({name:it.name,dist:fmtDist(it.dist),link:it.link})); 
-  if(typeof save==='function') save();
-
-  const sb=document.getElementById('storeBox');
-  if(sb) sb.innerHTML = items.map(s=>`<div class="row" style="justify-content:space-between;gap:8px">
-    <label class="row" style="gap:8px"><input type="checkbox" onchange="toggleStore('${s.name.replace(/'/g,"\\'")}',this.checked)"> ${s.name}</label>
-    <span class="muted">${fmtDist(s.dist)} ${s.link? '• <a class="link" href="'+s.link+'" target="_blank">📍 Itinéraire</a>':''}</span>
-  </div>`).join('');
-
-  renderCompare();
-}
-function useGPS(){ if(!navigator.geolocation){ alert('Géolocalisation non supportée.'); return; } navigator.geolocation.getCurrentPosition(pos=> loadStores(pos.coords.latitude, pos.coords.longitude), _=>alert('Impossible d’obtenir la position.')); }
-async function refreshStores(){
-  const city=(document.getElementById('cityInput')?.value)||state.user?.city;
-  if(city){ state.user.city=city; if(typeof save==='function') save(); try{ const p=await geocodeCity(city); await loadStores(p.lat,p.lon);}catch(e){ alert('Ville introuvable.'); } }
-  else if(state.user?.gps){ await loadStores(state.user.gps.lat,state.user.gps.lon); }
-  else { const sb=document.getElementById('storeBox'); if(sb) sb.innerHTML='<span class="muted">Indique une ville/CP ou utilise 📍.</span>'; }
-}
-function toggleStore(name,checked){ state.shop.prices=state.shop.prices||{}; state.shop.prices[name]=state.shop.prices[name]||{}; if(typeof save==='function') save(); renderCompare(); }
-
-/* Sources publiques “prix estimés” (indicatifs) */
-const BRAND_SOURCES={
-  "carrefour":{search:q=>`https://r.jina.ai/http://www.carrefour.fr/s?q=${encodeURIComponent(q)}`},
-  "intermarché":{search:q=>`https://r.jina.ai/https://www.intermarche.com/recherche?q=${encodeURIComponent(q)}`},
-  "leclerc":{search:q=>`https://r.jina.ai/https://www.e.leclerc/recherche?q=${encodeURIComponent(q)}`},
-  "auchan":{search:q=>`https://r.jina.ai/https://www.auchan.fr/recherche?q=${encodeURIComponent(q)}`},
-  "monoprix":{search:q=>`https://r.jina.ai/https://www.monoprix.fr/courses/recherche?text=${encodeURIComponent(q)}`},
-  "casino":{search:q=>`https://r.jina.ai/https://www.casino.fr/recherche?q=${encodeURIComponent(q)}`},
-  "lidl":{search:q=>`https://r.jina.ai/https://www.lidl.fr/q/${encodeURIComponent(q)}`},
-  "aldi":{search:q=>`https://r.jina.ai/https://www.aldi.fr/recherche?q=${encodeURIComponent(q)}`}
-};
-function brandFromName(name){ const low=name.toLowerCase(); return Object.keys(BRAND_SOURCES).find(b=>low.includes(b))||null; }
-function normalizeQuery(food){ return (food||'').replace(/\(.*?\)/g,'').replace(/cuit|cru|naturel|boîte|égoutté|mélange/gi,'').trim(); }
-
-async function fetchPriceForFoodAtStore(food,storeName){
-  const brand=brandFromName(storeName); if(!brand) return null;
-  try{
-    const url=BRAND_SOURCES[brand].search(normalizeQuery(food));
-    const r=await fetch(url,{headers:{'Accept':'text/html'}}); const ht=await r.text();
-    let m=ht.match(/(\d+[.,]\d{2})\s*€\s*\/\s*(?:kg|KG)/); if(m) return parseFloat(m[1].replace(',','.'))/1000;
-    m=ht.match(/(\d+[.,]\d{2})\s*€(?!\s*\/)/);
-    if(m){
-      const perPack=parseFloat(m[1].replace(',','.'));
-      const heur=/yaourt|skyr|fromage|cottage/i.test(food)?500:
-                 /riz|pâte|semoule|quinoa|flocon/i.test(food)?1000:
-                 /poulet|dinde|boeuf|steak|saumon|cabillaud|thon|tofu|tempeh|seitan|jambon|oeuf/i.test(food)?400:
-                 /banane|pomme|poire|kiwi|fruits rouges/i.test(food)?500:
-                 /brocoli|haricot|courgette|épinard|salade|chou|tomate|carotte|poivron/i.test(food)?500:1000;
-      return perPack/heur; /* €/g approximatif */
-    }
-  }catch(e){}
-  return null;
-}
-
-async function autoFillPrices(stores,foods){
-  state.shop.prices=state.shop.prices||{};
-  for(const sname of stores){
-    state.shop.prices[sname]=state.shop.prices[sname]||{};
-    for(const fd of foods){
-      if(!state.shop.prices[sname][fd]){
-        const p = await fetchPriceForFoodAtStore(fd,sname);
-        if(p){ state.shop.prices[sname][fd]=p; state.shop.priceEstimated=state.shop.priceEstimated||{}; state.shop.priceEstimated[sname]=state.shop.priceEstimated[sname]||{}; state.shop.priceEstimated[sname][fd]=true; }
-      }
-    }
+  // streak (compte les jours consécutifs avec score >= 60%)
+  let s=0; const dates=Object.keys(state.adh||{}).sort().reverse();
+  for(const d of dates){
+    const ms = state.plan?.meals?.length||3;
+    const dn = Object.values(state.adh?.[d]||{}).filter(Boolean).length;
+    if(ms && Math.round(dn/ms*100)>=60) s++; else break;
   }
-  if(typeof save==='function') save();
-}
-
-/* Agrégation besoins */
-function getMealsForShopScope(){
-  const scope=state.shop?.scope || 'day';
-  if(scope==='day') return state.plan?.meals || [];
-  if(scope==='week') return (state.planWeeks||[]).slice(0,7).flatMap(d=>d.meals||[]);
-  if(scope==='4w') return (state.planWeeks||[]).slice(0,28).flatMap(d=>d.meals||[]);
-  return state.plan?.meals || [];
-}
-
-/* Comparateur */
-function renderCompare(){
-  const box=document.getElementById('compareBox'); if(!box) return;
-  const stores=(state.shop.stores||[]).map(s=>s.name||s);
-  if(!stores.length){ box.textContent='Active ou configure au moins un magasin (case + 💶).'; return; }
-  const meals=getMealsForShopScope(); const list={}; meals.forEach(m=>m.items?.forEach(i=> list[i.food]=(list[i.food]||0)+i.grams ));
-  const foods=Object.keys(list);
-  autoFillPrices(stores,foods).then(()=>setTimeout(renderCompare,400));
-  const rows = stores.map(s=>{
-    const pm=state.shop.prices[s]||{}; let total=0,missing=false,est=false;
-    foods.forEach(f=>{ const p=pm[f]; if(p){ total+=p*list[f]; if(state.shop.priceEstimated?.[s]?.[f]) est=true; } else missing=true; });
-    return {store:s,total:Math.round(total*100)/100,missing,estimated:est};
-  }).sort((a,b)=>a.total-b.total).slice(0,5);
-  box.innerHTML = `<table class="table-compact"><tr><th>Magasin</th><th>Total €</th><th>Statut</th></tr>${
-    rows.map(r=>`<tr><td>${r.store}</td><td style="text-align:right">${r.total.toFixed(2)}</td><td style="text-align:right" class="muted">${r.missing?'incomplet':(r.estimated?'estimé':'réel')}</td></tr>`).join('')
-  }</table><p class="muted">“Estimé” = extraction publique, peut être non à jour selon les magasins.</p>`;
-}
-
-/* Éditeur de prix */
-function openPriceEditor(){
-  const stores=(state.shop.stores||[]).map(s=>s.name||s);
-  if(!stores.length){ alert('Active d’abord des magasins à proximité.'); return; }
-  const meals=getMealsForShopScope(); const need={}; meals.forEach(m=>m.items?.forEach(i=>need[i.food]=true));
-  const foods=Object.keys(need);
-  const box=document.getElementById('priceEditorBox');
-  let html='<table class="table-compact"><tr><th>Aliment</th>'+stores.map(s=>`<th style="text-align:right">${s}</th>`).join('')+'</tr>';
-  foods.forEach(fd=>{
-    html+='<tr><td>'+fd+'</td>';
-    stores.forEach(s=>{
-      const v=((state.shop.prices?.[s]||{})[fd]||null);
-      html+=`<td style="text-align:right"><input type="number" step="0.01" placeholder="€/kg" data-store="${s}" data-food="${fd}" value="${v? (v*1000).toFixed(2):''}" style="max-width:110px"></td>`;
-    });
-    html+='</tr>';
-  });
-  html+='</table>';
-  box.innerHTML=html; if(typeof openModal==='function') openModal('priceModal');
-}
-function savePriceEditor(){
-  document.querySelectorAll('#priceEditorBox input[type=number]').forEach(inp=>{
-    const s=inp.dataset.store,f=inp.dataset.food,v=parseFloat(inp.value);
-    state.shop.prices[s]=state.shop.prices[s]||{};
-    if(!isNaN(v) && v>0){ state.shop.prices[s][f]=v/1000; if(state.shop.priceEstimated?.[s]) delete state.shop.priceEstimated[s][f]; }
-    else { delete state.shop.prices[s][f]; }
-  });
-  if(typeof save==='function') save(); if(typeof closeModal==='function') closeModal('priceModal'); renderCompare();
+  document.getElementById('kpiStreak').textContent = s;
 }
 </script>
-<!-- ====== DIVERS v1.5 : handlers, paramètres ====== -->
 <script>
-document.getElementById('theme').onchange = (e)=>{ state.user.theme=e.target.value; save(); applyTheme(); };
-
-document.getElementById('height').onchange = (e)=>{ state.user.height=+e.target.value||170; save(); updateKPI(); };
-document.getElementById('weight').onchange = (e)=>{ state.user.weight=+e.target.value||70; save(); updateKPI(); };
-
-function initSettings(){
-  document.getElementById('height').value = state.user.height||170;
-  document.getElementById('weight').value = state.user.weight||70;
-  document.getElementById('theme').value = state.user.theme||'jarvis';
+// ====== COURSES LIST (v1.5-like) ======
+function buildListFromMeals(){
+  const meals = state.plan?.meals||[];
+  const need = {};
+  meals.forEach(m=> (m.items||[]).forEach(i=> need[i.food]=(need[i.food]||0)+i.grams ));
+  const list = Object.entries(need);
+  const box = document.getElementById('listContent');
+  if(!list.length){ box.textContent='Aucun aliment pour l’instant.'; return; }
+  box.innerHTML = '<table class="table-compact"><tr><th>Aliment</th><th style="text-align:right">Quantité</th></tr>' +
+    list.map(([k,g])=>`<tr><td>${k}</td><td style="text-align:right">${g} g</td></tr>`).join('') + '</table>';
 }
 
-function initPlan(){
-  document.getElementById('goal').value = state.goal||'fatloss';
-  document.getElementById('calories').value = state.kcal||2000;
-}
-</script>
-
-<!-- ====== INIT GLOBAL ====== -->
-<script>
-document.addEventListener('DOMContentLoaded', ()=>{
-  try{
-    applyTheme();
-    initSettings();
-    initPlan();
-    renderPlan(); renderTodo(); updateNextMeal(); updateKPI(); drawCharts(); renderPrefs();
-    streakTick();
-
-    // Patches
-    renderTip();
-    initNotifUI();
-    scheduleAllNotifications();
-    if(state.user?.city){ setTimeout(()=>refreshStores(),200); }
-  }catch(e){ console.warn(e); }
+// ====== INIT v1.5 ======
+window.addEventListener('load', ()=>{
+  try {
+    renderMeals();
+    renderAdh();
+    updateKPI();
+    buildListFromMeals();
+  } catch(e){ console.warn('init v1.5', e); }
 });
 </script>
 
+<!-- ====== INIT v1.9 : injections patch ====== -->
+<script>
+window.addEventListener('load', ()=>{
+  try {
+    if (typeof injectTip === 'function') injectTip();
+    if (typeof injectNotifCard === 'function') injectNotifCard();
+    if (typeof injectShopUI === 'function') injectShopUI();
+  } catch(e){ console.warn('v1.9 init patch', e); }
+});
+</script>
+<!-- ====== Service Worker (optionnel) ====== -->
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js', {scope:'./'}).catch(()=>{});
+  });
+}
+</script>
+
+<!-- ====== PATCH v1.9 (magasins, comparateur, notifications, astuce) ====== -->
 <script src="./av_v19.js"></script>
-  
-<!-- ====== FIN DE PAGE ====== -->
 </body>
 </html>
